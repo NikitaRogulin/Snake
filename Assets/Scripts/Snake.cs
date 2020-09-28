@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Snake : MonoBehaviour
 {
@@ -14,26 +15,21 @@ public class Snake : MonoBehaviour
     [SerializeField]
     GameObject prefabBone;
 
+    public UnityAction OnEatFood;
+
     void Update()
     {
         transform.position = transform.position + direction * Time.deltaTime * speed;
 
         if (Input.GetKey(KeyCode.W))
-        {
-            direction = Vector3.up;
-        }
+            direction = Vector3.up; 
         else if (Input.GetKey(KeyCode.S))
-        {
             direction = Vector3.down;
-        }
         else if (Input.GetKey(KeyCode.A))
-        {
             direction = Vector3.left;
-        }
         else if (Input.GetKey(KeyCode.D))
-        {
             direction = Vector3.right;
-        }
+        
 
         Vector3 oldPosition = transform.position;
 
@@ -45,29 +41,32 @@ public class Snake : MonoBehaviour
                 oldPosition = bone.position;
             }
             else
-            {
                 break;
-            }
         }
     }
-    private void OnCollision(Collision2D collision)
+    void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "Food")
             GrowUp();
-        //else if (collision.gameObject.tag == "Bone")
-        //{
-        //    Destroy(gameObject);
-        //    for(int i = 0; i < body.Count; i++)
-        //    {
-        //        Destroy(body[i]);
-        //    }
-        //}
+        else if (collision.gameObject.tag == "Bone" || collision.gameObject.tag == "Border")
+        {
+            StartCoroutine(BoneDestroy());
+        }
     }
-
     void GrowUp()
     {
         GameObject newBone = Instantiate(prefabBone, body[body.Count - 1].position,Quaternion.identity);
         speed += 1f; 
         body.Add(newBone.transform);
+    }
+    IEnumerator BoneDestroy()
+    {
+        speed = 0f;
+        for (int i = 0; i < body.Count; i++)
+        {
+            Destroy(body[i].gameObject);
+            yield return new WaitForSeconds(0.1f);
+        }  
+        Destroy(gameObject);
     }
 }

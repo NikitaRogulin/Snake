@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabFood: {fileID: 0}
-  currentFood: {fileID: 0}
+  currentFood: {fileID: 2675492443205421394}
   currentPositionFood: {x: 0, y: 0, z: 0}
 --- !u!114 &-858835963888592977
 MonoBehaviour:
