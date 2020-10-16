@@ -1,34 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class FoodSpawn : MonoBehaviour
 {
-    public GameObject prefabFood;
-    private float hightBorder = 14f;
-    private float widthBorder = 17f;
-    public GameObject currentFood;
-    public Vector3 currentPositionFood;
+    public Food prefabFood;
+    private const float hightBorder = 14f;
+    private const float widthBorder = 17f;
 
-    void Start()
+    private void Start()
     {
         MakeFood();
     }
 
-    void RandomPosition()
+    private Vector2 RandomPosition()
     {
-        currentPositionFood = new Vector2(Random.Range(-widthBorder, widthBorder), Random.Range(-hightBorder, hightBorder));
+        return new Vector2(Random.Range(-widthBorder, widthBorder), Random.Range(-hightBorder, hightBorder));
     }
-    void MakeFood()
+
+    public void MakeFood()
     {
         RandomPosition();
-        currentFood = Instantiate(prefabFood, currentPositionFood, Quaternion.identity);
-    }
-    void Update()
-    {
-        if(currentFood == null)
-        {
-            MakeFood();
-        }
+        var food = Instantiate(prefabFood, RandomPosition(), Quaternion.identity);
+        food.Eaten.AddListener(MakeFood);
+
     }
 }
